@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Local
-    "lettings.apps.LettingsConfig"
+    "lettings.apps.LettingsConfig",
+    "profiles.apps.ProfilesConfig"
 ]
 
 MIDDLEWARE = [
