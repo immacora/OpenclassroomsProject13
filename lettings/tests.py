@@ -1,5 +1,6 @@
 import pytest
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 from .models import Address, Letting
 
@@ -112,3 +113,68 @@ class TestLettingModel:
             title="Test Letting", address=valid_address_instance
         )
         assert letting.address == valid_address_instance
+
+
+@pytest.mark.django_db
+class TestIndexLettingsView:
+    """Integration tests for lettings index view."""
+
+    def test_index_view(self, client, valid_letting_instance):
+        """
+        GIVEN a fixture for valid_letting_instance with title and linked address
+        WHEN the '/lettings' page is requested (GET)
+        THEN checks that response is 200, the correct template is used and title is displayed
+        """
+        url = reverse("lettings:index")
+        response = client.get(url)
+        assert response.status_code == 200
+        assert "lettings/index.html" in [
+            template.name for template in response.templates
+        ]
+        assert valid_letting_instance.title in str(response.content)
+
+    def test_index_view_no_lettings(self, client):
+        """
+        GIVEN no lettings exist in the database
+        WHEN the '/lettings' page is requested (GET)
+        THEN checks that response is 200,
+        the correct template is used, Lettings title and message are displayed
+        """
+        url = reverse("lettings:index")
+        response = client.get(url)
+        assert response.status_code == 200
+        assert "lettings/index.html" in [
+            template.name for template in response.templates
+        ]
+        assert "Lettings" in str(response.content)
+        assert "No lettings are available." in str(response.content)
+
+
+@pytest.mark.django_db
+class TestLettingView:
+    """Integration tests for letting view."""
+
+    def test_letting_view(self, client, valid_letting_instance):
+        """
+        GIVEN a fixture for valid_letting_instance with title and linked address
+        WHEN the '/lettings/letting' page is requested (GET)
+        THEN checks that response is 200, the correct template is used
+        and letting details are displayed
+        """
+        url = reverse("lettings:letting", args=[valid_letting_instance.id])
+        response = client.get(url)
+        assert response.status_code == 200
+        assert "lettings/letting.html" in [
+            template.name for template in response.templates
+        ]
+        assert valid_letting_instance.title in str(response.content)
+        assert str(valid_letting_instance.address) in str(response.content)
+
+    def test_letting_view_not_letting(self, client):
+        """
+        GIVEN no letting exist in the database
+        WHEN the '/lettings/letting' page is requested (GET)
+        THEN checks that response is 404
+        """
+        response = client.get("lettings/WRONG-ID/")
+        assert response.status_code == 404
