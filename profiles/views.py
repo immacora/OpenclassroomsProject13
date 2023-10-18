@@ -1,5 +1,9 @@
 from django.shortcuts import render
+import logging
+
 from .models import Profile
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -10,11 +14,16 @@ def index(request):
         - request (HttpRequest): Current request object.
 
     Returns:
-        HttpResponse: Renders the list of user profiles passed through the context dictionary.
+        HttpResponse: Renders the list of user profiles passed through the context dictionary
+        or custom 500 page.
     """
-    profiles_list = Profile.objects.all()
-    context = {"profiles_list": profiles_list}
-    return render(request, "profiles/index.html", context)
+    try:
+        profiles_list = Profile.objects.all()
+        context = {"profiles_list": profiles_list}
+        return render(request, "profiles/index.html", context)
+    except Exception as e:
+        logger.error(f"Error fetching profiles: {e}")
+        return render(request, "500.html", status=500)
 
 
 def profile(request, username):
@@ -26,12 +35,12 @@ def profile(request, username):
         - username (str): The username of the user whose profile is to be displayed.
 
     Returns:
-        HttpResponse: Renders the user's profile through the context dictionary.
-
-    Raises:
-        DoesNotExist: Raise a DoesNotExist exception
-        if no user profile with the specified username is found.
+        HttpResponse: Renders the user's profile through the context dictionary or custom 404 page.
     """
-    profile = Profile.objects.get(user__username=username)
-    context = {"profile": profile}
-    return render(request, "profiles/profile.html", context)
+    try:
+        profile = Profile.objects.get(user__username=username)
+        context = {"profile": profile}
+        return render(request, "profiles/profile.html", context)
+    except Profile.DoesNotExist:
+        logger.error(f"Profile for username {username} not found.")
+        return render(request, "404.html", status=404)

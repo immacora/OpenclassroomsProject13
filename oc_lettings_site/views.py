@@ -1,4 +1,7 @@
 from django.shortcuts import render
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -9,9 +12,13 @@ def index(request):
         - request (HttpRequest): Current request object.
 
     Returns:
-        HttpResponse: Renders the index page HTML template.
+        HttpResponse: Renders the index page HTML template or custom 500 page.
     """
-    return render(request, "oc_lettings_site/index.html")
+    try:
+        return render(request, "oc_lettings_site/index.html")
+    except Exception as e:
+        logger.error(f"Error rendering index page: {e}")
+        return render(request, "500.html", status=500)
 
 
 def custom_404_view(request, exception):
