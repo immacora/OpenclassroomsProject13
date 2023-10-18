@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
+from django.db.utils import OperationalError
 from django.urls import reverse
 
 from .models import Profile
@@ -65,7 +66,7 @@ class TestIndexProfilesView:
         ]
         assert valid_profile_instance.user.username in str(response.content)
 
-    def test_index_view_no_profiles(self, client):
+    def test_index_view_with_no_profiles(self, client):
         """
         GIVEN no profiles exist in the database
         WHEN the '/profiles' page is requested (GET)
@@ -80,6 +81,21 @@ class TestIndexProfilesView:
         ]
         assert "Profiles" in str(response.content)
         assert "No profiles are available." in str(response.content)
+
+    def test_index_view_with_error_500(self, client, mocker):
+        """
+        GIVEN a wrong mock for database profiles list
+        WHEN the '/profiles' page is requested (GET)
+        THEN checks that response is 500 and the custom error template is used
+        """
+        mocker.patch(
+            "profiles.models.Profile.objects.all", side_effect=OperationalError
+        )
+        url = reverse("profiles:index")
+        response = client.get(url)
+        assert response.status_code == 500
+        assert "500.html" in [template.name for template in response.templates]
+        assert "INTERNAL SERVER ERROR" in str(response.content)
 
 
 @pytest.mark.django_db
@@ -105,11 +121,13 @@ class TestProfileView:
         assert str(valid_profile_instance.user.email) in str(response.content)
         assert str(valid_profile_instance.favorite_city) in str(response.content)
 
-    def test_profile_view_not_profile(self, client):
+    def test_profile_view_not_found(self, client):
         """
-        GIVEN no profile exist in the database
+        GIVEN wrong profile
         WHEN the '/profiles/profile' page is requested (GET)
-        THEN checks that response is 404
+        THEN checks that response is 404 and the custom template is rendered
         """
-        response = client.get("profiles/WRONG-ID/")
+        response = client.get("profiles/WRONG-USERNAME/")
         assert response.status_code == 404
+        assert "404.html" in [template.name for template in response.templates]
+        assert "PAGE NOT FOUND" in str(response.content)

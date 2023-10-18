@@ -1,5 +1,6 @@
 import pytest
 from django.core.exceptions import ValidationError
+from django.db.utils import OperationalError
 from django.urls import reverse
 
 from .models import Address, Letting
@@ -133,7 +134,7 @@ class TestIndexLettingsView:
         ]
         assert valid_letting_instance.title in str(response.content)
 
-    def test_index_view_no_lettings(self, client):
+    def test_index_view_with_no_lettings(self, client):
         """
         GIVEN no lettings exist in the database
         WHEN the '/lettings' page is requested (GET)
@@ -148,6 +149,21 @@ class TestIndexLettingsView:
         ]
         assert "Lettings" in str(response.content)
         assert "No lettings are available." in str(response.content)
+
+    def test_index_view_with_error_500(self, client, mocker):
+        """
+        GIVEN a wrong mock for database lettings list
+        WHEN the '/lettings' page is requested (GET)
+        THEN checks that response is 500 and the custom error template is used
+        """
+        mocker.patch(
+            "lettings.models.Letting.objects.all", side_effect=OperationalError
+        )
+        url = reverse("lettings:index")
+        response = client.get(url)
+        assert response.status_code == 500
+        assert "500.html" in [template.name for template in response.templates]
+        assert "INTERNAL SERVER ERROR" in str(response.content)
 
 
 @pytest.mark.django_db
@@ -170,11 +186,13 @@ class TestLettingView:
         assert valid_letting_instance.title in str(response.content)
         assert str(valid_letting_instance.address) in str(response.content)
 
-    def test_letting_view_not_letting(self, client):
+    def test_letting_view_not_found(self, client):
         """
-        GIVEN no letting exist in the database
+        GIVEN wrong letting
         WHEN the '/lettings/letting' page is requested (GET)
-        THEN checks that response is 404
+        THEN checks that response is 404 and the custom template is rendered
         """
-        response = client.get("lettings/WRONG-ID/")
+        response = client.get("lettings/9999/")
         assert response.status_code == 404
+        assert "404.html" in [template.name for template in response.templates]
+        assert "PAGE NOT FOUND" in str(response.content)
