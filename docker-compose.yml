@@ -5,7 +5,7 @@ services:
     env_file:
       - .env
     build: .
-    image: oclettings:1.0.0
+    image: immacora/oclettings:1.0.0
     command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
