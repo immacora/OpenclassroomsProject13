@@ -1,0 +1,19 @@
+version: 2.1
+
+jobs:
+  build_and_test:
+    docker:
+      - image: immacora/oclettings:1.0.0
+    steps:
+      - checkout
+      - run:
+          name: Run Tests
+          command: |
+            docker-compose up -d
+            docker-compose exec web pytest
+            docker-compose down
+
+workflows:
+  tests:
+    jobs:
+      - build_and_test
