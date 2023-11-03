@@ -15,10 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-try:
-    SECRET_KEY = os.environ["SECRET_KEY"]
-except KeyError as e:
-    raise RuntimeError("Could not find a SECRET_KEY in environment") from e
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -35,13 +32,6 @@ SESSION_COOKIE_SECURE = not DEBUG
 
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-else:
-    ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-
-    if not ALLOWED_HOSTS:
-        raise ValueError(
-            "ALLOWED_HOSTS is empty. Check your environment configuration."
-        )
 
 
 # Application definition
@@ -150,12 +140,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Sentry SDK config
-sentry_sdk.init(
-    dsn=os.environ.get("SENTRY_DSN"),
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=0.5,
-    profiles_sample_rate=0.5,
-)
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+        ],
+        traces_sample_rate=0.5,
+        profiles_sample_rate=0.5,
+    )
 
 
 # Logging config
