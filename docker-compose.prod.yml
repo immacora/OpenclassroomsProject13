@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      SENTRY_DSN: ${SENTRY_DSN}
+    build:
+      context: .
+      args:
+        - IMAGE_TAG=${IMAGE_TAG}
+    image: immacora/oclettings:${IMAGE_TAG}
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/code/staticfiles/
+    expose:
+      - 8000
+    container_name: oclettings_django_web_app_prod
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/code/staticfiles/
+    depends_on:
+      - web
+
+volumes:
+  static_volume:

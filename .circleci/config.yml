@@ -1,19 +1,110 @@
 version: 2.1
 
+orbs:
+  docker: circleci/docker@2.4.0
+
+
+commands:
+  define_image_tag:
+    description: Define the IMAGE_TAG environment variable
+    steps:
+      - run:
+          name: Define IMAGE_TAG
+          command: echo 'export IMAGE_TAG=$CIRCLE_SHA1' >> $BASH_ENV
+
+
 jobs:
-  build_and_test:
-    docker:
-      - image: immacora/oclettings:1.0.0
+  build_lint_and_test_with_fail_under_80:
+    executor: docker/machine
     steps:
       - checkout
+      - define_image_tag
       - run:
-          name: Run Tests
+          name: Start services
+          command: docker-compose -f docker-compose.prod.yml up -d
+      - run:
+          name: Lint
+          command: docker-compose -f docker-compose.prod.yml exec web flake8
+      - run:
+          name: Run tests with fail under 80%
           command: |
-            docker-compose up -d
-            docker-compose exec web pytest
-            docker-compose down
+            mkdir -p ./test-results
+            docker-compose -f docker-compose.prod.yml exec web coverage run -m pytest --junitxml=/code/test-results/junit.xml
+            docker-compose -f docker-compose.prod.yml exec web coverage report -m --fail-under=80
+            docker cp $(docker-compose -f docker-compose.prod.yml ps -q web):/code/test-results/junit.xml ./test-results/junit.xml
+            docker-compose -f docker-compose.prod.yml down
+      - store_test_results:
+          path: ./test-results
+
+  build_docker_image_and_push:
+    executor: docker/machine
+    steps:
+      - checkout
+      - define_image_tag
+      - run:
+          name: Build Docker Image
+          command: docker-compose -f docker-compose.prod.yml up -d --build
+      - run:
+          name: Login to Docker Hub
+          command: echo $DOCKERHUB_PASSWORD | docker login -u immacora --password-stdin
+      - run:
+          name: Push Docker Image
+          command: docker push immacora/oclettings:$CIRCLE_SHA1
+      - run:
+          name: Close services
+          command: docker-compose -f docker-compose.prod.yml down
+
+  digital_ocean_deploy:
+    executor: docker/machine
+    steps:
+      - checkout
+      - define_image_tag
+      - add_ssh_keys:
+          fingerprints:
+          - "92:f0:8a:e5:f3:d4:c2:57:bf:3f:14:9f:42:d6:78:59"
+      - run:
+          name: Prepare directories on the server
+          command: ssh $USER@$IP "mkdir -p /srv/oclettings"
+      - run:
+          name: Copy docker-compose.prod.yml to server
+          command: scp ./docker-compose.prod.yml $USER@$IP:/srv/oclettings/docker-compose.prod.yml
+      - run:
+          name: Copy nginx to server
+          command: scp ./nginx.conf $USER@$IP:/srv/oclettings/nginx.conf
+      - run:
+          name: Deploy to Digital Ocean
+          command: |
+            ssh-keyscan -H $IP >> ~/.ssh/known_hosts
+            ssh $USER@$IP \<< EOF
+              export SECRET_KEY='$SECRET_KEY'
+              export ALLOWED_HOSTS='$ALLOWED_HOSTS'
+              export SENTRY_DSN='$SENTRY_DSN'
+              export IMAGE_TAG='$IMAGE_TAG'
+              docker pull immacora/oclettings:$IMAGE_TAG
+              docker stop web || true
+              docker rm web || true
+              docker-compose -f /srv/oclettings/docker-compose.prod.yml down
+              docker-compose -f /srv/oclettings/docker-compose.prod.yml up -d
+            EOF
+      - run:
+          name: Clean up old Docker images
+          command: |
+            ssh $USER@$IP "docker image prune -a -f"
+
 
 workflows:
-  tests:
+  build_test_push_and_deploy:
     jobs:
-      - build_and_test
+      - build_lint_and_test_with_fail_under_80
+      - build_docker_image_and_push:
+          requires:
+            - build_lint_and_test_with_fail_under_80
+          filters:
+            branches:
+              only: main
+      - digital_ocean_deploy:
+          requires:
+            - build_docker_image_and_push
+          filters:
+            branches:
+              only: main

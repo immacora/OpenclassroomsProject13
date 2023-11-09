@@ -32,6 +32,8 @@ SESSION_COOKIE_SECURE = not DEBUG
 
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+else:
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
