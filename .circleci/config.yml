@@ -46,10 +46,10 @@ jobs:
           command: docker-compose -f docker-compose.prod.yml up -d --build
       - run:
           name: Login to Docker Hub
-          command: echo $DOCKERHUB_PASSWORD | docker login -u immacora --password-stdin
+          command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
       - run:
           name: Push Docker Image
-          command: docker push immacora/oclettings:$CIRCLE_SHA1
+          command: docker push $DOCKERHUB_USERNAME/oclettings:$CIRCLE_SHA1
       - run:
           name: Close services
           command: docker-compose -f docker-compose.prod.yml down
@@ -61,7 +61,7 @@ jobs:
       - define_image_tag
       - add_ssh_keys:
           fingerprints:
-          - "92:f0:8a:e5:f3:d4:c2:57:bf:3f:14:9f:42:d6:78:59"
+          - $SERVER_SSH_FINGERPRINT
       - run:
           name: Prepare directories on the server
           command: ssh $USER@$IP "mkdir -p /srv/oclettings"
@@ -80,7 +80,7 @@ jobs:
               export ALLOWED_HOSTS='$ALLOWED_HOSTS'
               export SENTRY_DSN='$SENTRY_DSN'
               export IMAGE_TAG='$IMAGE_TAG'
-              docker pull immacora/oclettings:$IMAGE_TAG
+              docker pull $DOCKERHUB_USERNAME/oclettings:$IMAGE_TAG
               docker stop web || true
               docker rm web || true
               docker-compose -f /srv/oclettings/docker-compose.prod.yml down

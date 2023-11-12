@@ -26,9 +26,6 @@ def get_env_bool(name, default="False"):
 
 DEBUG = get_env_bool("DEBUG")
 
-CSRF_COOKIE_SECURE = not DEBUG
-
-SESSION_COOKIE_SECURE = not DEBUG
 
 if DEBUG:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
