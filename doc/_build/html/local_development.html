@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Development Guide &mdash; OC-Lettings 1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deployment Guide (DigitalOcean)" href="deployment.html" />
+    <link rel="prev" title="Database Structure and Data Models" href="database_structure_and_data_models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            OC-Lettings
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start_guide.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prerequisites.html">Prerequisites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database_structure_and_data_models.html">Database Structure and Data Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Local Development Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-project">Clone the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retrieve-the-project-image">Retrieve the Project Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-sentry-project">Creating a Sentry Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-app-with-docker">Running the App with Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stopping-and-removing-docker-containers">Stopping and Removing Docker Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linting-and-code-quality">Linting and Code Quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-the-application">Testing the Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coverage-reporting">Coverage Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">Deployment Guide (DigitalOcean)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="application_access.html">Accessing the Application</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OC-Lettings</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Local Development Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/local_development.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="local-development-guide">
+<h1>Local Development Guide<a class="headerlink" href="#local-development-guide" title="Link to this heading"></a></h1>
+<p>This section provides a comprehensive guide for setting up and managing the local development environment for the OC-Lettings project. It covers everything from cloning the project to running tests, aiming to make the setup process as smooth as possible for developers of all levels.</p>
+<section id="clone-the-project">
+<h2>Clone the Project<a class="headerlink" href="#clone-the-project" title="Link to this heading"></a></h2>
+<p>Start by cloning the project repository. This step is essential for obtaining the latest version of the source code:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/immacora/OpenclassroomsProject13
+</pre></div>
+</div>
+<p>Understanding this step:
+- Cloning creates a local copy of the repository on your machine.
+- Make sure Git is installed on your system before executing this command.</p>
+</section>
+<section id="retrieve-the-project-image">
+<h2>Retrieve the Project Image<a class="headerlink" href="#retrieve-the-project-image" title="Link to this heading"></a></h2>
+<p>To ensure a consistent development environment, use Docker to set up the project:</p>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://docs.docker.com/get-docker/">Docker</a> if not already installed.</p></li>
+<li><p>Retrieve the <a class="reference external" href="https://hub.docker.com/r/immacora/oclettings/tags">latest project image</a> from Docker Hub.</p></li>
+</ol>
+</section>
+<section id="creating-a-sentry-project">
+<h2>Creating a Sentry Project<a class="headerlink" href="#creating-a-sentry-project" title="Link to this heading"></a></h2>
+<p>Sentry is used for error tracking and monitoring, which is crucial for maintaining the quality of the application:</p>
+<ol class="arabic">
+<li><p>Sign up for a <a class="reference external" href="https://sentry.io/signup/">Sentry account</a>.</p></li>
+<li><p>Follow these steps to create a new Sentry project:</p>
+<ul class="simple">
+<li><p>Choose Django as the platform.</p></li>
+<li><p>Name your project and complete the setup.</p></li>
+<li><p>Copy the DSN (Data Source Name) provided by Sentry.</p></li>
+</ul>
+<p>Why this is important:
+- Sentry helps in identifying, tracking, and resolving issues efficiently.</p>
+</li>
+</ol>
+</section>
+<section id="environment-setup">
+<h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Link to this heading"></a></h2>
+<p>Setting up the environment correctly is crucial for the application to run smoothly:</p>
+<ol class="arabic">
+<li><p>Create a .env file in the project’s root directory.</p></li>
+<li><p>Add the following environment variables with your specific values:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># django</span>
+<span class="nv">SECRET_KEY</span><span class="o">=</span>YourDjangoSecretKey
+<span class="nv">DEBUG</span><span class="o">=</span>True
+
+<span class="c1"># sentry</span>
+<span class="nv">SENTRY_DSN</span><span class="o">=</span>YourSentryProjectDSN
+</pre></div>
+</div>
+<p>This step is vital for:
+- Configuring Django settings.
+- Integrating Sentry into the project.</p>
+</li>
+</ol>
+</section>
+<section id="running-the-app-with-docker">
+<h2>Running the App with Docker<a class="headerlink" href="#running-the-app-with-docker" title="Link to this heading"></a></h2>
+<p>Docker simplifies the process of setting up and running the application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up
+</pre></div>
+</div>
+<p>Why Docker?
+- It ensures that the app runs in an environment identical to other developers’ setups.</p>
+</section>
+<section id="stopping-and-removing-docker-containers">
+<h2>Stopping and Removing Docker Containers<a class="headerlink" href="#stopping-and-removing-docker-containers" title="Link to this heading"></a></h2>
+<p>To stop and clean up after development, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>down
+</pre></div>
+</div>
+</section>
+<section id="linting-and-code-quality">
+<h2>Linting and Code Quality<a class="headerlink" href="#linting-and-code-quality" title="Link to this heading"></a></h2>
+<p>Maintaining code quality is vital. Run linting using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>web<span class="w"> </span>flake8
+</pre></div>
+</div>
+</section>
+<section id="testing-the-application">
+<h2>Testing the Application<a class="headerlink" href="#testing-the-application" title="Link to this heading"></a></h2>
+<p>Regular testing ensures the application’s reliability:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>web<span class="w"> </span>pytest
+</pre></div>
+</div>
+</section>
+<section id="coverage-reporting">
+<h2>Coverage Reporting<a class="headerlink" href="#coverage-reporting" title="Link to this heading"></a></h2>
+<p>To generate a coverage report, follow these steps:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>web<span class="w"> </span>coverage<span class="w"> </span>run<span class="w"> </span>-m<span class="w"> </span>pytest
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>web<span class="w"> </span>coverage<span class="w"> </span>report<span class="w"> </span>-m
+</pre></div>
+</div>
+<p>Why Coverage Reports?
+- They provide insights into the effectiveness of tests and areas needing more coverage.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database_structure_and_data_models.html" class="btn btn-neutral float-left" title="Database Structure and Data Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deployment.html" class="btn btn-neutral float-right" title="Deployment Guide (DigitalOcean)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, immacora.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
