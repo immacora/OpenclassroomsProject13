@@ -37,7 +37,7 @@ The process is defined in the specifications (documentation directory).
 
 ### Retrieve project image
 - Get [Docker](https://docs.docker.com/get-docker/)
-- Paste the code into your terminal to get project image: `docker pull immacora/oclettings:1.0.0`
+- Retrieve [newest project image](https://hub.docker.com/r/immacora/oclettings/tags)
 
 ### Create Sentry project
 - Create your [Sentry account](https://sentry.io/signup/)
@@ -57,13 +57,16 @@ DEBUG=True
 SENTRY_DSN=YourSentryProjectDSN
 ```
 
-### Run server
+### Run app in Docker containers
 `docker-compose up`
 
-### Access
-`http://localhost:8000/`
+### Stops and removes Docker containers
+`docker-compose down`
 
-`http://localhost:8000/admin/`
+### Access
+http://localhost:8000/
+
+http://localhost:8000/admin/
 
 ### Admin Login:
 * username : `admin`
@@ -78,3 +81,42 @@ SENTRY_DSN=YourSentryProjectDSN
 ### Generate coverage report
 - `docker-compose exec web coverage run -m pytest`
 - `docker-compose exec web coverage report -m`
+
+
+## Deployment (DigitalOcean)
+
+### Description
+Each commit triggers the compilation, linting and testing of the application, which must have coverage greater than 80%, via the CI/CD pipeline on your CircleCi account.
+
+If the commit is done on the main branch and the previous job was successful, the pipeline builds the Docker image (tag: hash of last commit) and pushes it to Docker Hub. If the previous jobs was successful, deployment and production job on DigitalOcean is executed.
+
+### Create server
+- Create your [DigitalOcean account](https://www.digitalocean.com/)
+- Create a new Droplet with Ubuntu (23.10) server and SSH Key Authentication Method
+  - Create a [Firewall](https://docs.digitalocean.com/products/networking/firewalls/how-to/create/) with SSH, HTTP and HTTPS rules
+  - Add [docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04) and [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04)
+
+### Create pipeline CI/CD (CircleCi)
+- Fork the [project](https://github.com/immacora/OpenclassroomsProject13) on your github account
+- Create your [CircleCI account connected to GitHub](https://circleci.com/docs/first-steps/#sign-up-and-create-an-org)
+- Create New Project on [CircleCI app](https://app.circleci.com/) with GitHub connexion to your forked repository
+  - Add an additional SSH Keys in the Project Settings and copy the Fingerprint to paste it in Environment Variables:
+    ```sh
+    Hostname: YourServerPublicIPAddress ; Private Key: YourServerPrivateSSHKey
+    ```
+  - Add Environment Variables in the Project Settings:
+    ```sh
+    Name: SECRET_KEY ; Value: YourDjangoSecretKey
+    Name: SENTRY_DSN ; Value: YourSentryProjectDSN
+    Name: ALLOWED_HOSTS ; Value: YourAllowedHosts
+    Name: DOCKERHUB_PASSWORD ; Value: YourDockerHubPassword
+    Name: DOCKERHUB_USERNAME ; Value: YourDockerHubUsername
+    Name: USER ; Value: YourServerLogginUsername
+    Name: IP ; Value: YourServerIP
+    Name: SERVER_SSH_FINGERPRINT ; Value: YourSSHFingerprint
+    ```
+
+### Access
+http://165.22.64.201/
+
+http://165.22.64.201/admin/
