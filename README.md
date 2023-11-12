@@ -21,7 +21,7 @@ The process is defined in the specifications (documentation directory).
   <a href="https://circleci.com/">
     <img src="https://img.shields.io/badge/circleci-2.1-049b4a?style=for-the-badge&logo=circleci&logoColor=black" alt="circleci-badge">
   </a>
-  <a href="https://about.readthedocs.com/">
+  <a href="https://openclassroomsproject13.readthedocs.io/en/latest/">
     <img src="https://img.shields.io/badge/readthedocs-white?style=for-the-badge&logo=readthedocs" alt="readthedocs-badge">
   </a>
   <a href="https://sentry.io/">
@@ -120,3 +120,10 @@ If the commit is done on the main branch and the previous job was successful, th
 http://165.22.64.201/
 
 http://165.22.64.201/admin/
+
+
+## Documentation
+
+For comprehensive information about the setup, features, and usage of this project, please refer to our official documentation. The documentation provides detailed instructions, explanations, and insights into the project's structure and capabilities.
+
+You can access the full documentation here: [OC-Lettings Project Documentation](https://openclassroomsproject13.readthedocs.io/en/latest/).
