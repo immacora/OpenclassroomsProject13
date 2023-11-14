@@ -81,15 +81,11 @@ jobs:
               export SENTRY_DSN='$SENTRY_DSN'
               export IMAGE_TAG='$IMAGE_TAG'
               docker pull $DOCKERHUB_USERNAME/oclettings:$IMAGE_TAG
-              docker stop web || true
-              docker rm web || true
               docker-compose -f /srv/oclettings/docker-compose.prod.yml down
+              sleep 5
               docker-compose -f /srv/oclettings/docker-compose.prod.yml up -d
+              docker image prune -a -f
             EOF
-      - run:
-          name: Clean up old Docker images
-          command: |
-            ssh $USER@$IP "docker image prune -a -f"
 
 
 workflows:
