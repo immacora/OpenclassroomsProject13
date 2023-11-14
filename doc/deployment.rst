@@ -3,6 +3,15 @@ Deployment Guide (DigitalOcean)
 
 This section outlines the steps for deploying the OC-Lettings project on DigitalOcean using CircleCI for continuous integration and continuous deployment (CI/CD). It explains how each commit can be automatically tested, built, and deployed, ensuring a streamlined and efficient deployment process.
 
+CircleCI Status
+---------------
+
+The current status of our CI/CD pipeline on CircleCI is represented by this badge, providing a real-time overview of the build and deployment status:
+
+.. image:: https://dl.circleci.com/status-badge/img/gh/immacora/OpenclassroomsProject13/tree/main.svg?style=svg
+   :target: https://dl.circleci.com/status-badge/redirect/gh/immacora/OpenclassroomsProject13/tree/main
+   :alt: CircleCI Build Status
+
 Overview of the Deployment Process
 ----------------------------------
 
@@ -17,19 +26,19 @@ Creating a Server on DigitalOcean
 
 To set up a server for deployment:
 
-1. Sign up for a `DigitalOcean account <https://www.digitalocean.com/>`.
+1. Sign up for a `DigitalOcean account <https://www.digitalocean.com/>`_.
 2. Create a new Droplet with Ubuntu (23.10) and SSH Key Authentication.
-   - Set up a `Firewall <https://docs.digitalocean.com/products/networking/firewalls/how-to/create/>` with SSH, HTTP, and HTTPS rules.
-   - Install `docker <https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04>` and `docker-compose <https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04>` on your Droplet.
+   - Set up a `Firewall <https://docs.digitalocean.com/products/networking/firewalls/how-to/create/>`_ with SSH, HTTP, and HTTPS rules.
+   - Install `docker <https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04>`_ and `docker-compose <https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04>`_ on your Droplet.
 
 Creating a CI/CD Pipeline with CircleCI
 ---------------------------------------
 
 To automate the deployment process:
 
-1. Fork the `project <https://github.com/immacora/OpenclassroomsProject13>` on your GitHub account.
-2. Create a `CircleCI account connected to GitHub <https://circleci.com/docs/first-steps/#sign-up-and-create-an-org>`.
-3. Set up a new project on the `CircleCI app <https://app.circleci.com/>` linked to your forked repository.
+1. Fork the `project <https://github.com/immacora/OpenclassroomsProject13>`_ on your GitHub account.
+2. Create a `CircleCI account connected to GitHub <https://circleci.com/docs/first-steps/#sign-up-and-create-an-org>`_.
+3. Set up a new project on the `CircleCI app <https://app.circleci.com/>`_ linked to your forked repository.
    - In the Project Settings, add an SSH Key and copy its Fingerprint to paste it in Environment Variables:
 
      .. code-block:: sh

@@ -35,10 +35,10 @@ Create a `.env` file in the project's root directory and add the necessary envir
    # sentry
    SENTRY_DSN=YourSentryProjectDSN
 
-Step 3: Run the Application Using Docker
-----------------------------------------
+Step 3: Run the Application Using Docker Compose
+------------------------------------------------
 
-Navigate to the root directory of the project and start the application using Docker:
+Navigate to the root directory of the project and start the application using Docker Compose:
 
 .. code-block:: bash
 
