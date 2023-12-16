@@ -115,10 +115,7 @@ If the commit is done on the main branch and the previous job was successful, th
     Name: IP ; Value: YourServerIP
     Name: SERVER_SSH_FINGERPRINT ; Value: YourSSHFingerprint
     ```
-  Exemple for this project:
-
-  [![CircleCI Build Status](https://dl.circleci.com/status-badge/img/gh/immacora/OpenclassroomsProject13/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/immacora/OpenclassroomsProject13/tree/main)
-
+ 
 
 ## Access
 
