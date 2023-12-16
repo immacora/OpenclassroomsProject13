@@ -121,9 +121,8 @@ If the commit is done on the main branch and the previous job was successful, th
 
 
 ## Access
-http://165.22.64.201/
 
-http://165.22.64.201/admin/
+Account deleted
 
 
 ## Documentation
