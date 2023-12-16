@@ -3,14 +3,6 @@ Deployment Guide (DigitalOcean)
 
 This section outlines the steps for deploying the OC-Lettings project on DigitalOcean using CircleCI for continuous integration and continuous deployment (CI/CD). It explains how each commit can be automatically tested, built, and deployed, ensuring a streamlined and efficient deployment process.
 
-CircleCI Status
----------------
-
-The current status of our CI/CD pipeline on CircleCI is represented by this badge, providing a real-time overview of the build and deployment status:
-
-.. image:: https://dl.circleci.com/status-badge/img/gh/immacora/OpenclassroomsProject13/tree/main.svg?style=svg
-   :target: https://dl.circleci.com/status-badge/redirect/gh/immacora/OpenclassroomsProject13/tree/main
-   :alt: CircleCI Build Status
 
 Overview of the Deployment Process
 ----------------------------------
