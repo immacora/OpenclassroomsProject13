@@ -16,8 +16,7 @@ Accessing the Deployed Web Application
 
 Once the application is deployed, it can be accessed publicly via the internet. This version represents the live application as users will see it.
 
-- **Deployed Main Page**: The main page of the deployed application is available at `http://165.22.64.201/ <http://165.22.64.201/>`_.
-- **Deployed Admin Panel**: For administrative tasks on the deployed application, visit `http://165.22.64.201/admin/ <http://165.22.64.201/admin/>`_.
+Account deleted
 
 Admin Credentials (Applicable for Both Versions)
 ------------------------------------------------
